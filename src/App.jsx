@@ -287,23 +287,116 @@ export default function App() {
 </div>
 ))}
 </div>
-{dashDetail==="costs"&&(
+{dashDetail==="costs"&&(()=>{
+const COST_CATS=[
+{key:"marketing",label:"📣 მარკეტინგი",color:"#818cf8",items:["SMM Boost","SMM ხელფასი"]},
+{key:"rent",label:"🏠 ქირა & კომუნალური",color:"#fb923c",items:["ქირა","ელ. ენერგია","წყალი","ინტერნეტი"]},
+{key:"outsource",label:"🧾 აუთსორსინგი",color:"#c9a227",items:["ბუღალტერი","Software","დეზინფექცია","Superfina"]},
+{key:"ops",label:"⚙ ოპერაციები",color:"#4ade80",items:["დალაგება","უსაფრთხოება","სახარჯი მასალა","გაუთვალისწინებელი"]},
+];
+const getItemsByLabel=(labels)=>fixedCosts.filter(c=>labels.includes(c.label));
+const otherItems=fixedCosts.filter(c=>!COST_CATS.flatMap(g=>g.items).includes(c.label));
+return(
 <div style={{...C,borderColor:"#ef444440",marginBottom:10}}>
-<div style={{fontSize:10,color:"#ef4444",marginBottom:10,letterSpacing:2,textTransform:"uppercase"}}>ყოველთვიური ხარჯი</div>
-<div style={{fontSize:12,color:"#8a7355",marginBottom:8}}>ხელფასები: <span style={{color:"#f5f0e8"}}>{totalWages}₾</span></div>
-{fixedCosts.map((c,i)=>(
-<div key={i} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",borderBottom:"1px solid #1a1510",fontSize:12}}>
-<span style={{color:"#8a7355"}}>{c.label}</span>
-<span style={{color:"#f5f0e8",fontWeight:"bold"}}>{parseFloat(c.amount).toLocaleString()}₾</span>
+<div style={{fontSize:10,color:"#ef4444",marginBottom:12,letterSpacing:2,textTransform:"uppercase"}}>ყოველთვიური ხარჯი</div>
+
+{/* WAGES */}
+<div style={{background:"#1f1810",borderRadius:10,padding:"10px 12px",marginBottom:8,border:"1px solid #3d2d1050"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+<span style={{fontSize:11,color:"#f472b6",fontWeight:"bold",letterSpacing:1}}>👥 ხელფასები</span>
+<span style={{fontSize:14,color:"#f472b6",fontWeight:"bold"}}>{totalWages.toLocaleString()}₾</span>
+</div>
+{staffList.map(s=>(
+<div key={s.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",fontSize:11}}>
+<span style={{color:"#6b5a3e"}}>↳ {s.name}</span>
+<span style={{color:"#8a7355"}}>{s.salary.toLocaleString()}₾</span>
 </div>
 ))}
-<div style={{display:"flex",justifyContent:"space-between",marginTop:8,paddingTop:8,borderTop:"1px solid #3d2d10",fontSize:13}}>
+</div>
+
+{/* ARROW */}
+<div style={{textAlign:"center",color:"#3d2d10",fontSize:16,marginBottom:4}}>↓</div>
+
+{/* COST CATEGORIES */}
+{COST_CATS.map((grp,gi)=>{
+const items=getItemsByLabel(grp.items);
+if(items.length===0)return null;
+const total=items.reduce((s,c)=>s+(parseFloat(c.amount)||0),0);
+return(
+<div key={grp.key}>
+<div style={{background:"#1a1510",borderRadius:10,padding:"10px 12px",marginBottom:4,border:"1px solid "+grp.color+"30"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+<span style={{fontSize:11,color:grp.color,fontWeight:"bold",letterSpacing:1}}>{grp.label}</span>
+<span style={{fontSize:13,color:grp.color,fontWeight:"bold"}}>{total.toLocaleString()}₾</span>
+</div>
+{items.map((c,i)=>{
+const globalIdx=fixedCosts.findIndex(x=>x.label===c.label&&x.amount===c.amount);
+return(
+<div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"3px 0",borderBottom:"1px solid #1f1510",fontSize:11}}>
+{editingCostId===globalIdx?(
+<>
+<input defaultValue={c.label} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,label:e.target.value}:x))} style={{background:"#0f0e0c",border:"1px solid "+grp.color,borderRadius:4,padding:"3px 6px",color:"#f5f0e8",fontSize:11,fontFamily:"inherit",outline:"none",flex:1,marginRight:6}}/>
+<input type="number" defaultValue={c.amount} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,amount:parseFloat(e.target.value)||0}:x))} style={{background:"#0f0e0c",border:"1px solid "+grp.color,borderRadius:4,padding:"3px",color:grp.color,fontSize:11,fontFamily:"inherit",outline:"none",width:60,textAlign:"right"}}/>
+<span style={{color:grp.color,fontSize:11,margin:"0 4px"}}>₾</span>
+<button onClick={()=>setEditingCostId(null)} style={{padding:"2px 7px",background:grp.color,border:"none",borderRadius:4,color:"#0f0e0c",cursor:"pointer",fontSize:11,fontWeight:"bold"}}>✓</button>
+<button onClick={()=>{setFixedCosts(p=>p.filter((_,j)=>j!==globalIdx));setEditingCostId(null);}} style={{padding:"2px 5px",background:"transparent",border:"none",color:"#ef4444",cursor:"pointer",fontSize:13,marginLeft:2}}>×</button>
+</>
+):(
+<>
+<span style={{color:"#6b5a3e",flex:1}}>↳ {c.label}</span>
+<span style={{color:"#f5f0e8",fontWeight:"bold",marginRight:8}}>{parseFloat(c.amount).toLocaleString()}₾</span>
+<button onClick={()=>setEditingCostId(globalIdx)} style={{padding:"1px 6px",background:"#2a2018",border:"1px solid #3d2d10",borderRadius:4,color:"#6b5a3e",cursor:"pointer",fontSize:9}}>✏</button>
+</>
+)}
+</div>
+);
+})}
+</div>
+{gi<COST_CATS.length-1&&<div style={{textAlign:"center",color:"#3d2d10",fontSize:16,marginBottom:4}}>↓</div>}
+</div>
+);
+})}
+
+{/* OTHER ITEMS */}
+{otherItems.length>0&&(
+<div style={{background:"#1a1510",borderRadius:10,padding:"10px 12px",marginBottom:4,border:"1px solid #3d2d10"}}>
+<div style={{fontSize:11,color:"#8a7355",fontWeight:"bold",marginBottom:6}}>🔹 სხვა</div>
+{otherItems.map((c)=>{
+const globalIdx=fixedCosts.findIndex(x=>x.label===c.label&&x.amount===c.amount);
+return(
+<div key={globalIdx} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"3px 0",fontSize:11}}>
+{editingCostId===globalIdx?(
+<>
+<input defaultValue={c.label} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,label:e.target.value}:x))} style={{background:"#0f0e0c",border:"1px solid #c9a227",borderRadius:4,padding:"3px 6px",color:"#f5f0e8",fontSize:11,fontFamily:"inherit",outline:"none",flex:1,marginRight:6}}/>
+<input type="number" defaultValue={c.amount} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,amount:parseFloat(e.target.value)||0}:x))} style={{background:"#0f0e0c",border:"1px solid #c9a227",borderRadius:4,padding:"3px",color:"#c9a227",fontSize:11,fontFamily:"inherit",outline:"none",width:60,textAlign:"right"}}/>
+<span style={{color:"#c9a227",fontSize:11,margin:"0 4px"}}>₾</span>
+<button onClick={()=>setEditingCostId(null)} style={{padding:"2px 7px",background:"#c9a227",border:"none",borderRadius:4,color:"#0f0e0c",cursor:"pointer",fontSize:11,fontWeight:"bold"}}>✓</button>
+<button onClick={()=>{setFixedCosts(p=>p.filter((_,j)=>j!==globalIdx));setEditingCostId(null);}} style={{padding:"2px 5px",background:"transparent",border:"none",color:"#ef4444",cursor:"pointer",fontSize:13,marginLeft:2}}>×</button>
+</>
+):(
+<>
+<span style={{color:"#6b5a3e",flex:1}}>↳ {c.label}</span>
+<span style={{color:"#f5f0e8",fontWeight:"bold",marginRight:8}}>{parseFloat(c.amount).toLocaleString()}₾</span>
+<button onClick={()=>setEditingCostId(globalIdx)} style={{padding:"1px 6px",background:"#2a2018",border:"1px solid #3d2d10",borderRadius:4,color:"#6b5a3e",cursor:"pointer",fontSize:9}}>✏</button>
+</>
+)}
+</div>
+);
+})}
+</div>
+)}
+
+{/* ADD NEW */}
+<button onClick={()=>setFixedCosts(p=>[...p,{label:"ახალი ხარჯი",amount:0}])} style={{width:"100%",padding:"7px",background:"#2a2018",border:"1px dashed #3d2d10",borderRadius:7,color:"#6b5a3e",cursor:"pointer",fontSize:11,fontFamily:"inherit",marginTop:4,marginBottom:8}}>+ ახალი ხარჯის დამატება</button>
+
+{/* TOTAL */}
+<div style={{display:"flex",justifyContent:"space-between",marginTop:4,paddingTop:8,borderTop:"1px solid #3d2d10",fontSize:14}}>
 <span style={{color:"#ef4444",fontWeight:"bold"}}>სულ</span>
 <span style={{color:"#ef4444",fontWeight:"bold"}}>{totalFixed.toLocaleString()}₾</span>
 </div>
-<button onClick={()=>setTab("💰 Fixed Costs")} style={{marginTop:10,width:"100%",padding:"6px",background:"#2a2018",border:"1px solid #3d2d10",borderRadius:6,color:"#c9a227",cursor:"pointer",fontSize:11,fontFamily:"inherit"}}>✏ Fixed Costs-ში შეცვლა →</button>
 </div>
-)}
+);
+})()}
 {dashDetail==="breakeven"&&(
 <div style={{...C,borderColor:"#fb923c40",marginBottom:10}}>
 <div style={{fontSize:10,color:"#fb923c",marginBottom:10,letterSpacing:2,textTransform:"uppercase"}}>ბრეიქ-ივენი</div>
