@@ -901,11 +901,11 @@ return(<a key={ti} href={"https://wa.me/"+waNum+"?text="+buildWA(group.orders)} 
 {o.note&&<div style={{fontSize:11,color:"#8a7355"}}>{o.note}</div>}
 <div style={{display:"flex",gap:8,marginTop:4}}>
 <label style={{fontSize:10,color:"#6b5a3e",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
-<input type="checkbox" checked={!!o.done} onChange={()=>setOrders(p=>p.map(x=>x.id===o.id?{...x,done:!x.done}:x))} style={{accentColor:"#c9a227"}}/>
+<input type="checkbox" checked={!!o.done} onChange={()=>setOrders(p=>p.map(x=>x.id===o.id?{...x,done:!x.done,confirmedAt:!x.done?Date.now():null}:x))} style={{accentColor:"#c9a227"}}/>
 დადასტ.
 </label>
 <label style={{fontSize:10,color:"#6b5a3e",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
-<input type="checkbox" checked={!!o.received} onChange={e=>{if(e.target.checked){setOrderHistory(p=>[{...o,receivedAt:Date.now()},...p]);setOrders(p=>p.filter(x=>x.id!==o.id));}}} style={{accentColor:"#4ade80"}}/>
+<input type="checkbox" checked={!!o.received} onChange={e=>{if(e.target.checked){setOrderHistory(p=>[{...o,receivedAt:Date.now(),confirmedAt:o.confirmedAt||null},...p]);setOrders(p=>p.filter(x=>x.id!==o.id));}}} style={{accentColor:"#4ade80"}}/>
 მიღებულია
 </label>
 </div>
@@ -917,18 +917,44 @@ return(<a key={ti} href={"https://wa.me/"+waNum+"?text="+buildWA(group.orders)} 
 })()}
 </div>
 )}
-{showOrderHistory&&orderHistory.length>0&&(
+{showOrderHistory&&(
 <div style={C}>
-<div style={{fontSize:10,color:"#4ade80",marginBottom:8,letterSpacing:2,textTransform:"uppercase"}}>📜 ისტორია</div>
-{orderHistory.slice(0,20).map(o=>(
-<div key={o.id} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:"1px solid #1f1810",fontSize:11}}>
-<span style={{color:"#6b5a3e"}}>{o.item}</span>
-<span style={{color:"#8a7355"}}>{o.qty} {o.unit}</span>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+<div style={{fontSize:10,color:"#4ade80",letterSpacing:2,textTransform:"uppercase"}}>📜 ისტორია ({orderHistory.length})</div>
+<button onClick={()=>{if(window.confirm("ისტორია გაიწმინდება. დარწმუნებული ხართ?"))setOrderHistory([]);}} style={{padding:"3px 10px",background:"#ef444420",border:"1px solid #ef444450",borderRadius:5,color:"#ef4444",cursor:"pointer",fontSize:10,fontFamily:"inherit"}}>🗑 გასუფთავება</button>
 </div>
-))}
+{orderHistory.length===0&&<div style={{textAlign:"center",color:"#6b5a3e",fontSize:12,padding:16}}>ისტორია ცარიელია</div>}
+{orderHistory.map(o=>{
+const fmt=ts=>ts?new Date(ts).toLocaleDateString("ka-GE",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
+const s=o.sid?suppliers.find(x=>x.id===o.sid):null;
+return(
+<div key={o.id} style={{padding:"9px 0",borderBottom:"1px solid #1f1810"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+<span style={{fontSize:13,fontWeight:"bold",color:"#f5f0e8"}}>{o.item}</span>
+<span style={{fontSize:12,color:"#c9a227",fontWeight:"bold"}}>{o.qty} {o.unit}</span>
+</div>
+{s&&<div style={{fontSize:10,color:"#c9a227",marginBottom:4}}>📦 {s.name}</div>}
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4}}>
+<div style={{background:"#1a1510",borderRadius:5,padding:"4px 6px"}}>
+<div style={{fontSize:9,color:"#6b5a3e",marginBottom:1}}>📝 შეკვეთა</div>
+<div style={{fontSize:10,color:"#8a7355"}}>{fmt(o.id)}</div>
+</div>
+<div style={{background:"#1a1510",borderRadius:5,padding:"4px 6px"}}>
+<div style={{fontSize:9,color:"#6b5a3e",marginBottom:1}}>✅ დადასტ.</div>
+<div style={{fontSize:10,color:o.confirmedAt?"#c9a227":"#3d2d10"}}>{o.confirmedAt?fmt(o.confirmedAt):"—"}</div>
+</div>
+<div style={{background:"#1a1510",borderRadius:5,padding:"4px 6px"}}>
+<div style={{fontSize:9,color:"#6b5a3e",marginBottom:1}}>📥 შესრულება</div>
+<div style={{fontSize:10,color:o.receivedAt?"#4ade80":"#3d2d10"}}>{o.receivedAt?fmt(o.receivedAt):"—"}</div>
+</div>
+</div>
+{o.note&&<div style={{fontSize:10,color:"#8a7355",marginTop:4}}>💬 {o.note}</div>}
+</div>
+);
+})}
 </div>
 )}
-<button onClick={()=>setShowOrderHistory(p=>!p)} style={{width:"100%",padding:"8px",background:"transparent",border:"1px solid #2a2018",borderRadius:8,color:showOrderHistory?"#c9a227":"#6b5a3e",cursor:"pointer",fontSize:11,fontFamily:"inherit",marginTop:8}}>{showOrderHistory?"▲ ისტ. დახურვა":"🕐 ისტორია"}</button>
+<button onClick={()=>setShowOrderHistory(p=>!p)} style={{width:"100%",padding:"8px",background:"transparent",border:"1px solid #2a2018",borderRadius:8,color:showOrderHistory?"#c9a227":"#6b5a3e",cursor:"pointer",fontSize:11,fontFamily:"inherit",marginTop:8}}>{showOrderHistory?"▲ ისტ. დახურვა":"🕐 ისტორია ("+ orderHistory.length+")"}</button>
 </div>
 )}
 
