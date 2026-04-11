@@ -204,7 +204,7 @@ export default function App() {
   const [staffList,setStaffList]=useState(()=>ls("foc_staff_v1",STAFF_DEFAULT));
   const [fixedCosts,setFixedCosts]=useState(()=>ls("foc_fixed_v1",FC_DEFAULT));
   const [orders,setOrders]=useState(()=>ls("foc_orders_v1",[]));
-  const [orderHistory,setOrderHistory]=useState(()=>ls("foc_order_hist_v1",[]));
+  const [orderHistory,setOrderHistory]=useState(()=>ls("foc_order_hist_v3",[]));
   const [inventory,setInventory]=useState(()=>ls("foc_inv_v1",{}));
   const [minStocks,setMinStocks]=useState(()=>ls("foc_minstock_v1",{}));
   const [tasks,setTasks]=useState(()=>ls("foc_tasks_v2",[]));
@@ -931,7 +931,10 @@ return(
 <div key={o.id} style={{padding:"9px 0",borderBottom:"1px solid #1f1810"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
 <span style={{fontSize:13,fontWeight:"bold",color:"#f5f0e8"}}>{o.item}</span>
+<div style={{display:"flex",alignItems:"center",gap:6}}>
 <span style={{fontSize:12,color:"#c9a227",fontWeight:"bold"}}>{o.qty} {o.unit}</span>
+<button onClick={()=>setOrderHistory(p=>p.filter(x=>x.id!==o.id))} style={{background:"transparent",border:"none",color:"#ef4444",cursor:"pointer",fontSize:14,padding:"0 2px"}}>×</button>
+</div>
 </div>
 {s&&<div style={{fontSize:10,color:"#c9a227",marginBottom:4}}>📦 {s.name}</div>}
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:4}}>
