@@ -538,7 +538,44 @@ return(
 )}
 
 {/* ADD NEW */}
-<button onClick={()=>setFixedCosts(p=>[...p,{label:"ახალი ხარჯი",amount:0}])} style={{width:"100%",padding:"7px",background:"#2a2018",border:"1px dashed #3d2d10",borderRadius:7,color:"#6b5a3e",cursor:"pointer",fontSize:11,fontFamily:"inherit",marginTop:4,marginBottom:8}}>+ ახალი ხარჯის დამატება</button>
+{(()=>{
+const CATS_FOR_ADD=["მარკეტინგი","ქირა & კომუნალური","აუთსორსინგი","ოპერაციები","სხვა"];
+const CAT_ITEMS={"მარკეტინგი":["SMM Boost","SMM ხელფასი"],"ქირა & კომუნალური":["ქირა","ელ. ენერგია","წყალი","ინტერნეტი"],"აუთსორსინგი":["ბუღალტერი","Software","დეზინფექცია","Superfina"],"ოპერაციები":["დალაგება","უსაფრთხოება","სახარჯი მასალა","გაუთვალისწინებელი"]};
+const [showAddForm,setShowAddForm]=React.useState(false);
+const [newLabel,setNewLabel]=React.useState("");
+const [newAmount,setNewAmount]=React.useState("");
+const [newCat,setNewCat]=React.useState("სხვა");
+const addCost=()=>{
+if(!newLabel.trim())return;
+setFixedCosts(p=>[...p,{label:newLabel.trim(),amount:parseFloat(newAmount)||0}]);
+setNewLabel("");setNewAmount("");setNewCat("სხვა");setShowAddForm(false);
+};
+return showAddForm?(
+<div style={{background:"#1a1510",borderRadius:10,padding:"12px",marginTop:4,marginBottom:8,border:"1px solid #c9a22740"}}>
+<div style={{fontSize:10,color:"#c9a227",marginBottom:8,letterSpacing:1}}>+ ახალი ხარჯი</div>
+<div style={{marginBottom:6}}>
+<div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>კატეგორია</div>
+<select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",background:"#0f0e0c",border:"1px solid #c9a227",borderRadius:6,padding:"6px 8px",color:"#f5f0e8",fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}>
+{CATS_FOR_ADD.map(c=><option key={c} value={c}>{c}</option>)}
+</select>
+</div>
+<div style={{marginBottom:6}}>
+<div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>დასახელება</div>
+<input value={newLabel} onChange={e=>setNewLabel(e.target.value)} placeholder="მაგ: ახალი ხარჯი" style={{width:"100%",background:"#0f0e0c",border:"1px solid #3d2d10",borderRadius:6,padding:"6px 8px",color:"#f5f0e8",fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
+</div>
+<div style={{marginBottom:10}}>
+<div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>თანხა ₾</div>
+<input type="number" value={newAmount} onChange={e=>setNewAmount(e.target.value)} placeholder="0" style={{width:"100%",background:"#0f0e0c",border:"1px solid #3d2d10",borderRadius:6,padding:"6px 8px",color:"#c9a227",fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
+</div>
+<div style={{display:"flex",gap:6}}>
+<button onClick={addCost} style={{flex:1,padding:"7px",background:newLabel.trim()?"#c9a227":"#2a2018",border:"none",borderRadius:6,color:newLabel.trim()?"#0f0e0c":"#6b5a3e",cursor:"pointer",fontSize:12,fontWeight:"bold",fontFamily:"inherit"}}>✓ დამატება</button>
+<button onClick={()=>setShowAddForm(false)} style={{padding:"7px 14px",background:"transparent",border:"1px solid #3d2d10",borderRadius:6,color:"#6b5a3e",cursor:"pointer",fontSize:12,fontFamily:"inherit"}}>გაუქმება</button>
+</div>
+</div>
+):(
+<button onClick={()=>setShowAddForm(true)} style={{width:"100%",padding:"7px",background:"#2a2018",border:"1px dashed #3d2d10",borderRadius:7,color:"#6b5a3e",cursor:"pointer",fontSize:11,fontFamily:"inherit",marginTop:4,marginBottom:8}}>+ ახალი ხარჯის დამატება</button>
+);
+})()}
 
 {/* TOTAL */}
 <div style={{display:"flex",justifyContent:"space-between",marginTop:4,paddingTop:8,borderTop:"1px solid #3d2d10",fontSize:14}}>
