@@ -975,6 +975,47 @@ return(
 <div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>ხელფასი ₾</div>
 <input type="number" defaultValue={selectedStaff.salary} onBlur={e=>setStaffList(p=>p.map(x=>x.id===selectedStaff.id?{...x,salary:parseFloat(e.target.value)||x.salary}:x))} style={{...inp,width:"100%",boxSizing:"border-box"}}/>
 </div>
+
+{/* FILE UPLOADS */}
+<div style={{marginTop:14,paddingTop:12,borderTop:"1px solid #2a2018"}}>
+<div style={{fontSize:10,color:"#c9a227",marginBottom:10,letterSpacing:2,textTransform:"uppercase"}}>📎 დოკუმენტები</div>
+{[{key:"contract",label:"📄 ხელშეკრულება"},{key:"duties",label:"📋 უფლება-მოვალეობები"}].map(({key,label})=>{
+const fileData=selectedStaff[key]||null;
+return(
+<div key={key} style={{marginBottom:10,background:"#0f0e0c",borderRadius:8,padding:"10px 12px",border:"1px solid #2a2018"}}>
+<div style={{fontSize:11,color:"#8a7355",marginBottom:7,fontWeight:"bold"}}>{label}</div>
+{fileData?(
+<div style={{display:"flex",alignItems:"center",gap:8}}>
+<a href={fileData.data} download={fileData.name} style={{flex:1,display:"flex",alignItems:"center",gap:6,padding:"6px 10px",background:"#1a1510",border:"1px solid #3d2d10",borderRadius:6,textDecoration:"none"}}>
+<span style={{fontSize:14}}>📥</span>
+<span style={{fontSize:11,color:"#c9a227",flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{fileData.name}</span>
+<span style={{fontSize:9,color:"#6b5a3e"}}>{(fileData.size/1024).toFixed(0)}KB</span>
+</a>
+<button onClick={()=>setStaffList(p=>p.map(x=>x.id===selectedStaff.id?{...x,[key]:null}:x))} style={{padding:"5px 9px",background:"transparent",border:"1px solid #ef444440",borderRadius:6,color:"#ef4444",cursor:"pointer",fontSize:12}}>×</button>
+</div>
+):(
+<label style={{display:"flex",alignItems:"center",gap:6,padding:"8px 12px",background:"#1a1510",border:"1px dashed #3d2d10",borderRadius:6,cursor:"pointer"}}>
+<span style={{fontSize:16}}>⬆️</span>
+<span style={{fontSize:11,color:"#6b5a3e"}}>ფაილის ატვირთვა (PDF, DOC, JPG...)</span>
+<input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style={{display:"none"}} onChange={e=>{
+const file=e.target.files[0];
+if(!file)return;
+if(file.size>5*1024*1024){alert("მაქსიმუმი 5MB");return;}
+const reader=new FileReader();
+reader.onload=ev=>{
+const fileObj={name:file.name,data:ev.target.result,size:file.size,uploadedAt:Date.now()};
+setStaffList(p=>p.map(x=>x.id===selectedStaff.id?{...x,[key]:fileObj}:x));
+setSelectedStaff(s=>({...s,[key]:fileObj}));
+};
+reader.readAsDataURL(file);
+}}/>
+</label>
+)}
+</div>
+);
+})}
+</div>
+
 </div>
 </div>
 ):(
