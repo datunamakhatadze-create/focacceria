@@ -3,6 +3,44 @@ import { useState, useEffect, useRef } from "react";
 const ls = (k,d) => { try { const v=localStorage.getItem(k); return v?JSON.parse(v):d; } catch(e) { return d; } };
 const ss = (k,v) => { try { localStorage.setItem(k,JSON.stringify(v)); } catch(e) {} };
 
+const AUTH_USER = "focacceria";
+const AUTH_PASS = "Focacceria12345";
+
+function LoginScreen({onLogin}) {
+  const [u,setU]=useState("");
+  const [p,setP]=useState("");
+  const [err,setErr]=useState(false);
+  const [show,setShow]=useState(false);
+  const handle=()=>{
+    if(u===AUTH_USER&&p===AUTH_PASS){onLogin();}
+    else{setErr(true);setTimeout(()=>setErr(false),2000);}
+  };
+  return(
+    <div style={{fontFamily:"Georgia,serif",background:"#0f0e0c",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div style={{width:320,padding:32,background:"#1a1510",border:"1px solid #3d2d10",borderRadius:16}}>
+        <div style={{textAlign:"center",marginBottom:28}}>
+          <div style={{fontSize:10,letterSpacing:4,color:"#c9a227",textTransform:"uppercase",marginBottom:6}}>Focacceria · თბილისი</div>
+          <div style={{fontSize:22,fontWeight:"bold",color:"#f5f0e8"}}>Business Dashboard</div>
+          <div style={{fontSize:11,color:"#6b5a3e",marginTop:6}}>შედი შენი ანგარიშით</div>
+        </div>
+        <div style={{marginBottom:14}}>
+          <div style={{fontSize:10,color:"#6b5a3e",marginBottom:5,letterSpacing:1}}>USERNAME</div>
+          <input value={u} onChange={e=>setU(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handle()} placeholder="focacceria" style={{width:"100%",background:"#0f0e0c",border:"1px solid "+(err?"#ef4444":"#3d2d10"),borderRadius:8,padding:"10px 14px",color:"#f5f0e8",fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
+        </div>
+        <div style={{marginBottom:20}}>
+          <div style={{fontSize:10,color:"#6b5a3e",marginBottom:5,letterSpacing:1}}>PASSWORD</div>
+          <div style={{position:"relative"}}>
+            <input type={show?"text":"password"} value={p} onChange={e=>setP(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handle()} placeholder="••••••••••••••" style={{width:"100%",background:"#0f0e0c",border:"1px solid "+(err?"#ef4444":"#3d2d10"),borderRadius:8,padding:"10px 40px 10px 14px",color:"#f5f0e8",fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
+            <button onClick={()=>setShow(s=>!s)} style={{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",background:"transparent",border:"none",color:"#6b5a3e",cursor:"pointer",fontSize:14}}>{show?"🙈":"👁"}</button>
+          </div>
+        </div>
+        {err&&<div style={{textAlign:"center",color:"#ef4444",fontSize:12,marginBottom:12}}>❌ მომხმარებელი ან პაროლი არასწორია</div>}
+        <button onClick={handle} style={{width:"100%",padding:"12px",background:"#c9a227",border:"none",borderRadius:10,color:"#0f0e0c",cursor:"pointer",fontSize:14,fontWeight:"bold",fontFamily:"inherit",letterSpacing:1}}>შესვლა →</button>
+      </div>
+    </div>
+  );
+}
+
 const MENU_DEFAULT = [
   {id:1,name:"Caprese Verde",cat:"Vegetarian",price:27,cost:7.40},
   {id:2,name:"Mediterraneo VG",cat:"Vegetarian",price:22,cost:3.78},
@@ -88,6 +126,7 @@ const CAT_COL={"პური":"#fb923c","ხორცი":"#f472b6","რძი�
 const TABS=["📋 დავ.","Dashboard","მენიუ","🧾 პროდუქტები","🛒 შეკვეთები","მომწოდ.","💰 Fixed Costs","🏛 სტრუქტურა","AI"];
 
 export default function App() {
+  const [authed,setAuthed]=useState(()=>sessionStorage.getItem("foc_auth")==="1");
   const [tab,setTab]=useState("📋 დავ.");
   const [menu,setMenu]=useState(()=>ls("foc_menu_v2",MENU_DEFAULT));
   const [products,setProducts]=useState(()=>ls("foc_prod_v5",PROD_DEFAULT));
@@ -215,6 +254,8 @@ export default function App() {
 
   return (
 <div style={{fontFamily:"Georgia,serif",background:"#0f0e0c",minHeight:"100vh",color:"#f5f0e8"}}>
+{!authed&&<LoginScreen onLogin={()=>{sessionStorage.setItem("foc_auth","1");setAuthed(true);}}/>}
+{authed&&<div>
 <style>{`*{box-sizing:border-box}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#3d2d10;border-radius:2px}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}input[type=number]{-moz-appearance:textfield}`}</style>
 
 {/* HEADER */}
@@ -227,6 +268,7 @@ export default function App() {
 <div style={{fontSize:9,color:"#8a7355"}}>დღეს</div>
 <div style={{fontSize:17,color:"#c9a227",fontWeight:"bold"}}>0₾</div>
 {lowItems.length>0&&<div style={{fontSize:9,color:"#ef4444"}}>⚠ {lowItems.length} მარაგი</div>}
+<button onClick={()=>{sessionStorage.removeItem("foc_auth");setAuthed(false);}} style={{marginTop:4,padding:"2px 8px",background:"transparent",border:"1px solid #3d2d10",borderRadius:5,color:"#6b5a3e",cursor:"pointer",fontSize:9,fontFamily:"inherit"}}>გასვლა</button>
 </div>
 </div>
 
@@ -1141,6 +1183,7 @@ onDoubleClick={()=>{if(orgMode==="view")setEditOrgNode(node.id);}}>
 )}
 
 </div>
+</div>}
 </div>
 );
 }
