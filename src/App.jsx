@@ -1,4 +1,17 @@
 import { useState, useEffect, useRef } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPA_URL = "https://svrpjukbmjottgrbhcwm.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2cnBqdWtibWpvdHRncmJoY3dtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTE2MzgsImV4cCI6MjA5MTQ2NzYzOH0.sZoAZzQiII7o1A2zmrQGwV5yXddsYyxO29WFxOc9DC4";
+const supa = createClient(SUPA_URL, SUPA_KEY);
+
+const dbLoad = async (table) => { try { const {data} = await supa.from(table).select("*"); return data||[]; } catch(e) { return []; } };
+const dbUpsert = async (table, rows) => { try { await supa.from(table).upsert(Array.isArray(rows)?rows:[rows], {onConflict:"id"}); } catch(e) {} };
+const dbDelete = async (table, id) => { try { await supa.from(table).delete().eq("id", id); } catch(e) {} };
+const dbSet = async (table, key, val) => { try { await supa.from(table).upsert({product_id:key, qty:val}, {onConflict:"product_id"}); } catch(e) {} };
+const dbFCUpsert = async (rows) => { try { await supa.from("fixed_costs").upsert(rows, {onConflict:"id"}); } catch(e) {} };
+
+
 
 const ls = (k,d) => { try { const v=localStorage.getItem(k); return v?JSON.parse(v):d; } catch(e) { return d; } };
 const ss = (k,v) => { try { localStorage.setItem(k,JSON.stringify(v)); } catch(e) {} };
@@ -192,6 +205,45 @@ export default function App() {
   const chatRef=useRef(null);
   const timerRef=useRef(null);
 
+  // Load from Supabase on mount
+  const [dbReady,setDbReady]=useState(false);
+  useEffect(()=>{
+    const load=async()=>{
+      try{
+        const [m,p,sup,st,fc,ord,oh,t,inv,ms]=await Promise.all([
+          dbLoad("menu"),dbLoad("products"),dbLoad("suppliers"),dbLoad("staff"),
+          dbLoad("fixed_costs"),dbLoad("orders"),dbLoad("order_history"),dbLoad("tasks"),
+          dbLoad("inventory"),dbLoad("min_stocks")
+        ]);
+        if(m.length)setMenu(m);
+        if(p.length)setProducts(p);
+        if(sup.length)setSuppliers(sup);
+        if(st.length)setStaffList(st);
+        if(fc.length)setFixedCosts(fc);
+        if(ord.length)setOrders(ord);
+        if(oh.length)setOrderHistory(oh);
+        if(t.length)setTasks(t);
+        if(inv.length){const o={};inv.forEach(x=>{o[x.product_id]=x.qty;});setInventory(o);}
+        if(ms.length){const o={};ms.forEach(x=>{o[x.product_id]=x.qty;});setMinStocks(o);}
+      }catch(e){console.log("DB load error",e);}
+      setDbReady(true);
+    };
+    load();
+  },[]);
+
+  // Sync to Supabase when data changes
+  useEffect(()=>{if(dbReady)dbUpsert("menu",menu);},[menu,dbReady]);
+  useEffect(()=>{if(dbReady)dbUpsert("products",products);},[products,dbReady]);
+  useEffect(()=>{if(dbReady)dbUpsert("suppliers",suppliers);},[suppliers,dbReady]);
+  useEffect(()=>{if(dbReady)dbUpsert("staff",staffList);},[staffList,dbReady]);
+  useEffect(()=>{if(dbReady)dbFCUpsert(fixedCosts);},[fixedCosts,dbReady]);
+  useEffect(()=>{if(dbReady)dbUpsert("orders",orders);},[orders,dbReady]);
+  useEffect(()=>{if(dbReady)dbUpsert("order_history",orderHistory);},[orderHistory,dbReady]);
+  useEffect(()=>{if(dbReady)dbUpsert("tasks",tasks);},[tasks,dbReady]);
+  useEffect(()=>{if(dbReady)Object.entries(inventory).forEach(([k,v])=>dbSet("inventory",k,v));},[inventory,dbReady]);
+  useEffect(()=>{if(dbReady)Object.entries(minStocks).forEach(([k,v])=>dbSet("min_stocks",k,v));},[minStocks,dbReady]);
+
+  // Keep localStorage as backup
   useEffect(()=>{ss("foc_menu_v2",menu);},[menu]);
   useEffect(()=>{ss("foc_prod_v5",products);},[products]);
   useEffect(()=>{ss("foc_sup_v3",suppliers);},[suppliers]);
