@@ -9,7 +9,13 @@ const dbLoad = async (table) => { try { const {data} = await supa.from(table).se
 const dbUpsert = async (table, rows) => { try { await supa.from(table).upsert(Array.isArray(rows)?rows:[rows], {onConflict:"id"}); } catch(e) {} };
 const dbDelete = async (table, id) => { try { await supa.from(table).delete().eq("id", id); } catch(e) {} };
 const dbSet = async (table, key, val) => { try { await supa.from(table).upsert({product_id:key, qty:val}, {onConflict:"product_id"}); } catch(e) {} };
-const dbFCUpsert = async (rows) => { try { await supa.from("fixed_costs").upsert(rows, {onConflict:"id"}); } catch(e) {} };
+const dbFCUpsert = async (rows) => { 
+  try { 
+    await supa.from("fixed_costs").delete().neq("id",0);
+    const rowsWithId = rows.map((r,i)=>({...r, id: r.id||i+1}));
+    await supa.from("fixed_costs").insert(rowsWithId); 
+  } catch(e) { console.log("fc error",e); } 
+};
 
 
 
@@ -380,6 +386,8 @@ export default function App() {
   const [editOrgNode,setEditOrgNode]=useState(null);
   const [orgMode,setOrgMode]=useState("view");
   const [connectFrom,setConnectFrom]=useState(null);
+  const [saving,setSaving]=useState(false);
+  const [saveMsg,setSaveMsg]=useState("");
   const [addingCost,setAddingCost]=useState(false);
   const [newCostLabel,setNewCostLabel]=useState("");
   const [newCostAmount,setNewCostAmount]=useState("");
@@ -506,7 +514,25 @@ export default function App() {
 <div style={{fontSize:9,color:"#8a7355"}}>დღეს</div>
 <div style={{fontSize:17,color:"#c9a227",fontWeight:"bold"}}>0₾</div>
 {lowItems.length>0&&<div style={{fontSize:9,color:"#ef4444"}}>⚠ {lowItems.length} მარაგი</div>}
-<button onClick={()=>{sessionStorage.removeItem("foc_auth");setAuthed(false);}} style={{marginTop:4,padding:"2px 8px",background:"transparent",border:"1px solid #3d2d10",borderRadius:5,color:"#6b5a3e",cursor:"pointer",fontSize:9,fontFamily:"inherit"}}>გასვლა</button>
+<div style={{display:"flex",gap:4,marginTop:4,justifyContent:"flex-end"}}>
+<button onClick={async()=>{
+  setSaving(true);
+  try{
+    await Promise.all([
+      dbUpsert("menu",menu),
+      dbUpsert("products",products),
+      dbUpsert("suppliers",suppliers),
+      dbUpsert("staff",staffList),
+      dbUpsert("tasks",tasks),
+    ]);
+    await supa.from("fixed_costs").delete().neq("id",0);
+    await supa.from("fixed_costs").insert(fixedCosts.map((r,i)=>({...r,id:r.id||i+1})));
+    setSaveMsg("✓ შენახულია");setTimeout(()=>setSaveMsg(""),2000);
+  }catch(e){setSaveMsg("❌ შეცდომა");}
+  setSaving(false);
+}} style={{padding:"2px 8px",background:saving?"#2a2018":"#c9a22720",border:"1px solid #c9a22750",borderRadius:5,color:saving?"#6b5a3e":"#c9a227",cursor:"pointer",fontSize:9,fontFamily:"inherit"}}>{saveMsg||"💾 შენახვა"}</button>
+<button onClick={()=>{sessionStorage.removeItem("foc_auth");setAuthed(false);}} style={{padding:"2px 8px",background:"transparent",border:"1px solid #3d2d10",borderRadius:5,color:"#6b5a3e",cursor:"pointer",fontSize:9,fontFamily:"inherit"}}>გასვლა</button>
+</div>
 </div>
 </div>
 
