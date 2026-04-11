@@ -195,6 +195,131 @@ const PROD_CATS=["ყველა","ბაკალეა","ბოსტნე�
 const CAT_COL={"პური":"#fb923c","ხორცი":"#f472b6","რძის პროდ.":"#67e8f9","ბოსტნეული":"#4ade80","სოუსი":"#c9a227","კაკალი":"#a78bfa","ყავა":"#fb923c","დესერტი":"#818cf8","საყოფაცხოვრებო":"#34d399"};
 const TABS=["📋 დავ.","Dashboard","მენიუ","🧾 პროდუქტები","🛒 შეკვეთები","მომწოდ.","💰 Fixed Costs","🏛 სტრუქტურა","AI"];
 
+const COST_CATS_DEF=[
+{key:"marketing",label:"📣 მარკეტინგი",color:"#818cf8",items:["SMM Boost","SMM ხელფასი"]},
+{key:"rent",label:"🏠 ქირა & კომუნალური",color:"#fb923c",items:["ქირა","ელ. ენერგია","წყალი","ინტერნეტი"]},
+{key:"outsource",label:"🧾 აუთსორსინგი",color:"#c9a227",items:["ბუღალტერი","Software","დეზინფექცია","Superfina"]},
+{key:"ops",label:"⚙ ოპერაციები",color:"#4ade80",items:["დალაგება","უსაფრთხოება","სახარჯი მასალა","გაუთვალისწინებელი"]},
+];
+
+function CostsDetail({fixedCosts,setFixedCosts,staffList,totalWages,totalFixed,editingCostId,setEditingCostId,addingCost,setAddingCost,newCostLabel,setNewCostLabel,newCostAmount,setNewCostAmount,newCostCat,setNewCostCat,C,inp}){
+const getItemsByLabel=(labels)=>fixedCosts.filter(c=>labels.includes(c.label));
+const otherItems=fixedCosts.filter(c=>!COST_CATS_DEF.flatMap(g=>g.items).includes(c.label));
+return(
+<div style={{...C,borderColor:"#ef444440",marginBottom:10}}>
+<div style={{fontSize:10,color:"#ef4444",marginBottom:12,letterSpacing:2,textTransform:"uppercase"}}>ყოველთვიური ხარჯი</div>
+<div style={{background:"#1f1810",borderRadius:10,padding:"10px 12px",marginBottom:8,border:"1px solid #3d2d1050"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+<span style={{fontSize:11,color:"#f472b6",fontWeight:"bold",letterSpacing:1}}>👥 ხელფასები</span>
+<span style={{fontSize:14,color:"#f472b6",fontWeight:"bold"}}>{totalWages.toLocaleString()}₾</span>
+</div>
+{staffList.map(s=>(
+<div key={s.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",fontSize:11}}>
+<span style={{color:"#6b5a3e"}}>↳ {s.name}</span>
+<span style={{color:"#8a7355"}}>{s.salary.toLocaleString()}₾</span>
+</div>
+))}
+</div>
+<div style={{textAlign:"center",color:"#3d2d10",fontSize:16,marginBottom:4}}>↓</div>
+{COST_CATS_DEF.map((grp,gi)=>{
+const items=getItemsByLabel(grp.items);
+if(items.length===0)return null;
+const total=items.reduce((s,c)=>s+(parseFloat(c.amount)||0),0);
+return(
+<div key={grp.key}>
+<div style={{background:"#1a1510",borderRadius:10,padding:"10px 12px",marginBottom:4,border:"1px solid "+grp.color+"30"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+<span style={{fontSize:11,color:grp.color,fontWeight:"bold",letterSpacing:1}}>{grp.label}</span>
+<span style={{fontSize:13,color:grp.color,fontWeight:"bold"}}>{total.toLocaleString()}₾</span>
+</div>
+{items.map((c,i)=>{
+const globalIdx=fixedCosts.findIndex(x=>x.label===c.label&&x.amount===c.amount);
+return(
+<div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"3px 0",borderBottom:"1px solid #1f1510",fontSize:11}}>
+{editingCostId===globalIdx?(
+<>
+<input defaultValue={c.label} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,label:e.target.value}:x))} style={{background:"#0f0e0c",border:"1px solid "+grp.color,borderRadius:4,padding:"3px 6px",color:"#f5f0e8",fontSize:11,fontFamily:"inherit",outline:"none",flex:1,marginRight:6}}/>
+<input type="number" defaultValue={c.amount} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,amount:parseFloat(e.target.value)||0}:x))} style={{background:"#0f0e0c",border:"1px solid "+grp.color,borderRadius:4,padding:"3px",color:grp.color,fontSize:11,fontFamily:"inherit",outline:"none",width:60,textAlign:"right"}}/>
+<span style={{color:grp.color,fontSize:11,margin:"0 4px"}}>₾</span>
+<button onClick={()=>setEditingCostId(null)} style={{padding:"2px 7px",background:grp.color,border:"none",borderRadius:4,color:"#0f0e0c",cursor:"pointer",fontSize:11,fontWeight:"bold"}}>✓</button>
+<button onClick={()=>{setFixedCosts(p=>p.filter((_,j)=>j!==globalIdx));setEditingCostId(null);}} style={{padding:"2px 5px",background:"transparent",border:"none",color:"#ef4444",cursor:"pointer",fontSize:13,marginLeft:2}}>×</button>
+</>
+):(
+<>
+<span style={{color:"#6b5a3e",flex:1}}>↳ {c.label}</span>
+<span style={{color:"#f5f0e8",fontWeight:"bold",marginRight:8}}>{parseFloat(c.amount).toLocaleString()}₾</span>
+<button onClick={()=>setEditingCostId(globalIdx)} style={{padding:"1px 6px",background:"#2a2018",border:"1px solid #3d2d10",borderRadius:4,color:"#6b5a3e",cursor:"pointer",fontSize:9}}>✏</button>
+</>
+)}
+</div>
+);
+})}
+</div>
+{gi<COST_CATS_DEF.length-1&&<div style={{textAlign:"center",color:"#3d2d10",fontSize:16,marginBottom:4}}>↓</div>}
+</div>
+);
+})}
+{otherItems.length>0&&(
+<div style={{background:"#1a1510",borderRadius:10,padding:"10px 12px",marginBottom:4,border:"1px solid #3d2d10"}}>
+<div style={{fontSize:11,color:"#8a7355",fontWeight:"bold",marginBottom:6}}>🔹 სხვა</div>
+{otherItems.map((c)=>{
+const globalIdx=fixedCosts.findIndex(x=>x.label===c.label&&x.amount===c.amount);
+return(
+<div key={globalIdx} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"3px 0",fontSize:11}}>
+{editingCostId===globalIdx?(
+<>
+<input defaultValue={c.label} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,label:e.target.value}:x))} style={{background:"#0f0e0c",border:"1px solid #c9a227",borderRadius:4,padding:"3px 6px",color:"#f5f0e8",fontSize:11,fontFamily:"inherit",outline:"none",flex:1,marginRight:6}}/>
+<input type="number" defaultValue={c.amount} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,amount:parseFloat(e.target.value)||0}:x))} style={{background:"#0f0e0c",border:"1px solid #c9a227",borderRadius:4,padding:"3px",color:"#c9a227",fontSize:11,fontFamily:"inherit",outline:"none",width:60,textAlign:"right"}}/>
+<span style={{color:"#c9a227",fontSize:11,margin:"0 4px"}}>₾</span>
+<button onClick={()=>setEditingCostId(null)} style={{padding:"2px 7px",background:"#c9a227",border:"none",borderRadius:4,color:"#0f0e0c",cursor:"pointer",fontSize:11,fontWeight:"bold"}}>✓</button>
+<button onClick={()=>{setFixedCosts(p=>p.filter((_,j)=>j!==globalIdx));setEditingCostId(null);}} style={{padding:"2px 5px",background:"transparent",border:"none",color:"#ef4444",cursor:"pointer",fontSize:13,marginLeft:2}}>×</button>
+</>
+):(
+<>
+<span style={{color:"#6b5a3e",flex:1}}>↳ {c.label}</span>
+<span style={{color:"#f5f0e8",fontWeight:"bold",marginRight:8}}>{parseFloat(c.amount).toLocaleString()}₾</span>
+<button onClick={()=>setEditingCostId(globalIdx)} style={{padding:"1px 6px",background:"#2a2018",border:"1px solid #3d2d10",borderRadius:4,color:"#6b5a3e",cursor:"pointer",fontSize:9}}>✏</button>
+</>
+)}
+</div>
+);
+})}
+</div>
+)}
+{addingCost?(
+<div style={{background:"#1a1510",borderRadius:10,padding:"12px",marginTop:4,marginBottom:8,border:"1px solid #c9a22740"}}>
+<div style={{fontSize:10,color:"#c9a227",marginBottom:8,letterSpacing:1}}>+ ახალი ხარჯი</div>
+<div style={{marginBottom:6}}>
+<div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>კატეგორია</div>
+<select value={newCostCat} onChange={e=>setNewCostCat(e.target.value)} style={{width:"100%",background:"#0f0e0c",border:"1px solid #c9a227",borderRadius:6,padding:"6px 8px",color:"#f5f0e8",fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}>
+{["მარკეტინგი","ქირა & კომუნალური","აუთსორსინგი","ოპერაციები","სხვა"].map(c=><option key={c} value={c}>{c}</option>)}
+</select>
+</div>
+<div style={{marginBottom:6}}>
+<div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>დასახელება</div>
+<input value={newCostLabel} onChange={e=>setNewCostLabel(e.target.value)} placeholder="მაგ: ახალი ხარჯი" style={{width:"100%",background:"#0f0e0c",border:"1px solid #3d2d10",borderRadius:6,padding:"6px 8px",color:"#f5f0e8",fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
+</div>
+<div style={{marginBottom:10}}>
+<div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>თანხა ₾</div>
+<input type="number" value={newCostAmount} onChange={e=>setNewCostAmount(e.target.value)} placeholder="0" style={{width:"100%",background:"#0f0e0c",border:"1px solid #3d2d10",borderRadius:6,padding:"6px 8px",color:"#c9a227",fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
+</div>
+<div style={{display:"flex",gap:6}}>
+<button onClick={()=>{if(!newCostLabel.trim())return;setFixedCosts(p=>[...p,{label:newCostLabel.trim(),amount:parseFloat(newCostAmount)||0}]);setNewCostLabel("");setNewCostAmount("");setNewCostCat("სხვა");setAddingCost(false);}} style={{flex:1,padding:"7px",background:newCostLabel.trim()?"#c9a227":"#2a2018",border:"none",borderRadius:6,color:newCostLabel.trim()?"#0f0e0c":"#6b5a3e",cursor:"pointer",fontSize:12,fontWeight:"bold",fontFamily:"inherit"}}>✓ დამატება</button>
+<button onClick={()=>setAddingCost(false)} style={{padding:"7px 14px",background:"transparent",border:"1px solid #3d2d10",borderRadius:6,color:"#6b5a3e",cursor:"pointer",fontSize:12,fontFamily:"inherit"}}>გაუქმება</button>
+</div>
+</div>
+):(
+<button onClick={()=>setAddingCost(true)} style={{width:"100%",padding:"7px",background:"#2a2018",border:"1px dashed #3d2d10",borderRadius:7,color:"#6b5a3e",cursor:"pointer",fontSize:11,fontFamily:"inherit",marginTop:4,marginBottom:8}}>+ ახალი ხარჯის დამატება</button>
+)}
+<div style={{display:"flex",justifyContent:"space-between",marginTop:4,paddingTop:8,borderTop:"1px solid #3d2d10",fontSize:14}}>
+<span style={{color:"#ef4444",fontWeight:"bold"}}>სულ</span>
+<span style={{color:"#ef4444",fontWeight:"bold"}}>{totalFixed.toLocaleString()}₾</span>
+</div>
+</div>
+);
+}
+
+
 export default function App() {
   const [authed,setAuthed]=useState(()=>sessionStorage.getItem("foc_auth")==="1");
   const [tab,setTab]=useState("📋 დავ.");
@@ -255,6 +380,10 @@ export default function App() {
   const [editOrgNode,setEditOrgNode]=useState(null);
   const [orgMode,setOrgMode]=useState("view");
   const [connectFrom,setConnectFrom]=useState(null);
+  const [addingCost,setAddingCost]=useState(false);
+  const [newCostLabel,setNewCostLabel]=useState("");
+  const [newCostAmount,setNewCostAmount]=useState("");
+  const [newCostCat,setNewCostCat]=useState("სხვა");
   const [reminderTime,setReminderTime]=useState(()=>localStorage.getItem("foc_reminder")||"09:00");
   const [reminderSaved,setReminderSaved]=useState(false);
   const [notifStatus,setNotifStatus]=useState("default");
@@ -438,153 +567,27 @@ export default function App() {
 </div>
 ))}
 </div>
-{dashDetail==="costs"&&(()=>{
-const COST_CATS=[
-{key:"marketing",label:"📣 მარკეტინგი",color:"#818cf8",items:["SMM Boost","SMM ხელფასი"]},
-{key:"rent",label:"🏠 ქირა & კომუნალური",color:"#fb923c",items:["ქირა","ელ. ენერგია","წყალი","ინტერნეტი"]},
-{key:"outsource",label:"🧾 აუთსორსინგი",color:"#c9a227",items:["ბუღალტერი","Software","დეზინფექცია","Superfina"]},
-{key:"ops",label:"⚙ ოპერაციები",color:"#4ade80",items:["დალაგება","უსაფრთხოება","სახარჯი მასალა","გაუთვალისწინებელი"]},
-];
-const getItemsByLabel=(labels)=>fixedCosts.filter(c=>labels.includes(c.label));
-const otherItems=fixedCosts.filter(c=>!COST_CATS.flatMap(g=>g.items).includes(c.label));
-return(
-<div style={{...C,borderColor:"#ef444440",marginBottom:10}}>
-<div style={{fontSize:10,color:"#ef4444",marginBottom:12,letterSpacing:2,textTransform:"uppercase"}}>ყოველთვიური ხარჯი</div>
-
-{/* WAGES */}
-<div style={{background:"#1f1810",borderRadius:10,padding:"10px 12px",marginBottom:8,border:"1px solid #3d2d1050"}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-<span style={{fontSize:11,color:"#f472b6",fontWeight:"bold",letterSpacing:1}}>👥 ხელფასები</span>
-<span style={{fontSize:14,color:"#f472b6",fontWeight:"bold"}}>{totalWages.toLocaleString()}₾</span>
-</div>
-{staffList.map(s=>(
-<div key={s.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",fontSize:11}}>
-<span style={{color:"#6b5a3e"}}>↳ {s.name}</span>
-<span style={{color:"#8a7355"}}>{s.salary.toLocaleString()}₾</span>
-</div>
-))}
-</div>
-
-{/* ARROW */}
-<div style={{textAlign:"center",color:"#3d2d10",fontSize:16,marginBottom:4}}>↓</div>
-
-{/* COST CATEGORIES */}
-{COST_CATS.map((grp,gi)=>{
-const items=getItemsByLabel(grp.items);
-if(items.length===0)return null;
-const total=items.reduce((s,c)=>s+(parseFloat(c.amount)||0),0);
-return(
-<div key={grp.key}>
-<div style={{background:"#1a1510",borderRadius:10,padding:"10px 12px",marginBottom:4,border:"1px solid "+grp.color+"30"}}>
-<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-<span style={{fontSize:11,color:grp.color,fontWeight:"bold",letterSpacing:1}}>{grp.label}</span>
-<span style={{fontSize:13,color:grp.color,fontWeight:"bold"}}>{total.toLocaleString()}₾</span>
-</div>
-{items.map((c,i)=>{
-const globalIdx=fixedCosts.findIndex(x=>x.label===c.label&&x.amount===c.amount);
-return(
-<div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"3px 0",borderBottom:"1px solid #1f1510",fontSize:11}}>
-{editingCostId===globalIdx?(
-<>
-<input defaultValue={c.label} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,label:e.target.value}:x))} style={{background:"#0f0e0c",border:"1px solid "+grp.color,borderRadius:4,padding:"3px 6px",color:"#f5f0e8",fontSize:11,fontFamily:"inherit",outline:"none",flex:1,marginRight:6}}/>
-<input type="number" defaultValue={c.amount} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,amount:parseFloat(e.target.value)||0}:x))} style={{background:"#0f0e0c",border:"1px solid "+grp.color,borderRadius:4,padding:"3px",color:grp.color,fontSize:11,fontFamily:"inherit",outline:"none",width:60,textAlign:"right"}}/>
-<span style={{color:grp.color,fontSize:11,margin:"0 4px"}}>₾</span>
-<button onClick={()=>setEditingCostId(null)} style={{padding:"2px 7px",background:grp.color,border:"none",borderRadius:4,color:"#0f0e0c",cursor:"pointer",fontSize:11,fontWeight:"bold"}}>✓</button>
-<button onClick={()=>{setFixedCosts(p=>p.filter((_,j)=>j!==globalIdx));setEditingCostId(null);}} style={{padding:"2px 5px",background:"transparent",border:"none",color:"#ef4444",cursor:"pointer",fontSize:13,marginLeft:2}}>×</button>
-</>
-):(
-<>
-<span style={{color:"#6b5a3e",flex:1}}>↳ {c.label}</span>
-<span style={{color:"#f5f0e8",fontWeight:"bold",marginRight:8}}>{parseFloat(c.amount).toLocaleString()}₾</span>
-<button onClick={()=>setEditingCostId(globalIdx)} style={{padding:"1px 6px",background:"#2a2018",border:"1px solid #3d2d10",borderRadius:4,color:"#6b5a3e",cursor:"pointer",fontSize:9}}>✏</button>
-</>
+{dashDetail==="costs"&&(
+<CostsDetail
+fixedCosts={fixedCosts}
+setFixedCosts={setFixedCosts}
+staffList={staffList}
+totalWages={totalWages}
+totalFixed={totalFixed}
+editingCostId={editingCostId}
+setEditingCostId={setEditingCostId}
+addingCost={addingCost}
+setAddingCost={setAddingCost}
+newCostLabel={newCostLabel}
+setNewCostLabel={setNewCostLabel}
+newCostAmount={newCostAmount}
+setNewCostAmount={setNewCostAmount}
+newCostCat={newCostCat}
+setNewCostCat={setNewCostCat}
+C={C}
+inp={inp}
+/>
 )}
-</div>
-);
-})}
-</div>
-{gi<COST_CATS.length-1&&<div style={{textAlign:"center",color:"#3d2d10",fontSize:16,marginBottom:4}}>↓</div>}
-</div>
-);
-})}
-
-{/* OTHER ITEMS */}
-{otherItems.length>0&&(
-<div style={{background:"#1a1510",borderRadius:10,padding:"10px 12px",marginBottom:4,border:"1px solid #3d2d10"}}>
-<div style={{fontSize:11,color:"#8a7355",fontWeight:"bold",marginBottom:6}}>🔹 სხვა</div>
-{otherItems.map((c)=>{
-const globalIdx=fixedCosts.findIndex(x=>x.label===c.label&&x.amount===c.amount);
-return(
-<div key={globalIdx} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"3px 0",fontSize:11}}>
-{editingCostId===globalIdx?(
-<>
-<input defaultValue={c.label} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,label:e.target.value}:x))} style={{background:"#0f0e0c",border:"1px solid #c9a227",borderRadius:4,padding:"3px 6px",color:"#f5f0e8",fontSize:11,fontFamily:"inherit",outline:"none",flex:1,marginRight:6}}/>
-<input type="number" defaultValue={c.amount} onBlur={e=>setFixedCosts(p=>p.map((x,j)=>j===globalIdx?{...x,amount:parseFloat(e.target.value)||0}:x))} style={{background:"#0f0e0c",border:"1px solid #c9a227",borderRadius:4,padding:"3px",color:"#c9a227",fontSize:11,fontFamily:"inherit",outline:"none",width:60,textAlign:"right"}}/>
-<span style={{color:"#c9a227",fontSize:11,margin:"0 4px"}}>₾</span>
-<button onClick={()=>setEditingCostId(null)} style={{padding:"2px 7px",background:"#c9a227",border:"none",borderRadius:4,color:"#0f0e0c",cursor:"pointer",fontSize:11,fontWeight:"bold"}}>✓</button>
-<button onClick={()=>{setFixedCosts(p=>p.filter((_,j)=>j!==globalIdx));setEditingCostId(null);}} style={{padding:"2px 5px",background:"transparent",border:"none",color:"#ef4444",cursor:"pointer",fontSize:13,marginLeft:2}}>×</button>
-</>
-):(
-<>
-<span style={{color:"#6b5a3e",flex:1}}>↳ {c.label}</span>
-<span style={{color:"#f5f0e8",fontWeight:"bold",marginRight:8}}>{parseFloat(c.amount).toLocaleString()}₾</span>
-<button onClick={()=>setEditingCostId(globalIdx)} style={{padding:"1px 6px",background:"#2a2018",border:"1px solid #3d2d10",borderRadius:4,color:"#6b5a3e",cursor:"pointer",fontSize:9}}>✏</button>
-</>
-)}
-</div>
-);
-})}
-</div>
-)}
-
-{/* ADD NEW */}
-{(()=>{
-const CATS_FOR_ADD=["მარკეტინგი","ქირა & კომუნალური","აუთსორსინგი","ოპერაციები","სხვა"];
-const CAT_ITEMS={"მარკეტინგი":["SMM Boost","SMM ხელფასი"],"ქირა & კომუნალური":["ქირა","ელ. ენერგია","წყალი","ინტერნეტი"],"აუთსორსინგი":["ბუღალტერი","Software","დეზინფექცია","Superfina"],"ოპერაციები":["დალაგება","უსაფრთხოება","სახარჯი მასალა","გაუთვალისწინებელი"]};
-const [showAddForm,setShowAddForm]=React.useState(false);
-const [newLabel,setNewLabel]=React.useState("");
-const [newAmount,setNewAmount]=React.useState("");
-const [newCat,setNewCat]=React.useState("სხვა");
-const addCost=()=>{
-if(!newLabel.trim())return;
-setFixedCosts(p=>[...p,{label:newLabel.trim(),amount:parseFloat(newAmount)||0}]);
-setNewLabel("");setNewAmount("");setNewCat("სხვა");setShowAddForm(false);
-};
-return showAddForm?(
-<div style={{background:"#1a1510",borderRadius:10,padding:"12px",marginTop:4,marginBottom:8,border:"1px solid #c9a22740"}}>
-<div style={{fontSize:10,color:"#c9a227",marginBottom:8,letterSpacing:1}}>+ ახალი ხარჯი</div>
-<div style={{marginBottom:6}}>
-<div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>კატეგორია</div>
-<select value={newCat} onChange={e=>setNewCat(e.target.value)} style={{width:"100%",background:"#0f0e0c",border:"1px solid #c9a227",borderRadius:6,padding:"6px 8px",color:"#f5f0e8",fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}>
-{CATS_FOR_ADD.map(c=><option key={c} value={c}>{c}</option>)}
-</select>
-</div>
-<div style={{marginBottom:6}}>
-<div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>დასახელება</div>
-<input value={newLabel} onChange={e=>setNewLabel(e.target.value)} placeholder="მაგ: ახალი ხარჯი" style={{width:"100%",background:"#0f0e0c",border:"1px solid #3d2d10",borderRadius:6,padding:"6px 8px",color:"#f5f0e8",fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
-</div>
-<div style={{marginBottom:10}}>
-<div style={{fontSize:9,color:"#6b5a3e",marginBottom:3}}>თანხა ₾</div>
-<input type="number" value={newAmount} onChange={e=>setNewAmount(e.target.value)} placeholder="0" style={{width:"100%",background:"#0f0e0c",border:"1px solid #3d2d10",borderRadius:6,padding:"6px 8px",color:"#c9a227",fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
-</div>
-<div style={{display:"flex",gap:6}}>
-<button onClick={addCost} style={{flex:1,padding:"7px",background:newLabel.trim()?"#c9a227":"#2a2018",border:"none",borderRadius:6,color:newLabel.trim()?"#0f0e0c":"#6b5a3e",cursor:"pointer",fontSize:12,fontWeight:"bold",fontFamily:"inherit"}}>✓ დამატება</button>
-<button onClick={()=>setShowAddForm(false)} style={{padding:"7px 14px",background:"transparent",border:"1px solid #3d2d10",borderRadius:6,color:"#6b5a3e",cursor:"pointer",fontSize:12,fontFamily:"inherit"}}>გაუქმება</button>
-</div>
-</div>
-):(
-<button onClick={()=>setShowAddForm(true)} style={{width:"100%",padding:"7px",background:"#2a2018",border:"1px dashed #3d2d10",borderRadius:7,color:"#6b5a3e",cursor:"pointer",fontSize:11,fontFamily:"inherit",marginTop:4,marginBottom:8}}>+ ახალი ხარჯის დამატება</button>
-);
-})()}
-
-{/* TOTAL */}
-<div style={{display:"flex",justifyContent:"space-between",marginTop:4,paddingTop:8,borderTop:"1px solid #3d2d10",fontSize:14}}>
-<span style={{color:"#ef4444",fontWeight:"bold"}}>სულ</span>
-<span style={{color:"#ef4444",fontWeight:"bold"}}>{totalFixed.toLocaleString()}₾</span>
-</div>
-</div>
-);
-})()}
 {dashDetail==="breakeven"&&(
 <div style={{...C,borderColor:"#fb923c40",marginBottom:10}}>
 <div style={{fontSize:10,color:"#fb923c",marginBottom:10,letterSpacing:2,textTransform:"uppercase"}}>ბრეიქ-ივენი</div>
