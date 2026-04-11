@@ -75,35 +75,92 @@ const MENU_DEFAULT = [
 ];
 
 const SUP_DEFAULT = [
-  {id:1,name:"შპს ბლექ სი დისტრიბუშენი",contact:"ნინო",tel1:"568-68-60-07",tel2:"",minOrder:null,phones:["568-68-60-07"],phoneLabels:["ნინო"]},
-  {id:2,name:"შპს ბლექ სი (სალსიჩა)",contact:"ბლექ სი",tel1:"568-68-60-07",tel2:"",minOrder:null,phones:["568-68-60-07"],phoneLabels:[]},
-  {id:3,name:"შპს მამუ (პური)",contact:"მამუ",tel1:"+995 568 68 60 07",tel2:"",minOrder:null,phones:["+995 568 68 60 07"],phoneLabels:[]},
-  {id:4,name:"შპს ბლეც სი",contact:"",tel1:"568-68-60-07",tel2:"",minOrder:null,phones:[],phoneLabels:[]},
-  {id:5,name:"შპს ჯოია მია (დიეგო)",contact:"დიეგო",tel1:"599-30-55-30",tel2:"577-11-05-62",minOrder:null,phones:["599-30-55-30","577-11-05-62"],phoneLabels:["დიეგო","ოფისი"]},
-  {id:6,name:"შპს დიპლომატ ჯორჯია",contact:"",tel1:"შეავსე",tel2:"",minOrder:null,phones:[],phoneLabels:[]},
-  {id:7,name:"შპს მაია კო",contact:"მაია",tel1:"შეავსე",tel2:"",minOrder:null,phones:[],phoneLabels:[]},
-  {id:8,name:"შპს ჯეო-კოოპი",contact:"",tel1:"შეავსე",tel2:"",minOrder:null,phones:[],phoneLabels:[]},
-  {id:9,name:"შპს ფოია მია",contact:"",tel1:"შეავსე",tel2:"",minOrder:null,phones:[],phoneLabels:[]},
-  {id:10,name:"შპს ფრუქტი",contact:"",tel1:"შეავსე",tel2:"",minOrder:null,phones:[],phoneLabels:[]},
-  {id:11,name:"შპს ლაქტი",contact:"",tel1:"შეავსე",tel2:"",minOrder:null,phones:[],phoneLabels:[]},
-  {id:12,name:"შპს საგარეჯო",contact:"",tel1:"შეავსე",tel2:"",minOrder:null,phones:[],phoneLabels:[]},
-  {id:13,name:"მაია მოდებაძე (ბაზარი)",contact:"მაია",tel1:"557-20-67-69",tel2:"",minOrder:null,phones:["557-20-67-69"],phoneLabels:["მაია"]},
-  {id:19,name:"ბაზარი",contact:"—",tel1:"",tel2:"",minOrder:null,cat:"ბაზარი",phones:[],phoneLabels:[]},
+  {id:1,name:"შპს ბლექ სი დისთრიბუშენი",contact:"გიორგი",tel1:"557-70-07-22",tel2:"514-05-05-66",minOrder:null,phones:["557-70-07-22","514-05-05-66"],phoneLabels:["გიორგი","ოფ."]},
+  {id:2,name:"შპს დიპლომატ ჯორჯია",contact:"გიორგი",tel1:"595-06-23-73",tel2:"",minOrder:null,phones:["595-06-23-73"],phoneLabels:["გიორგი"]},
+  {id:3,name:"შპს ევრო ინვესტი",contact:"დათო",tel1:"591-54-17-34",tel2:"",minOrder:null,phones:["591-54-17-34"],phoneLabels:["დათო"]},
+  {id:4,name:"შპს ევროპროდუქტი",contact:"სანდრო",tel1:"599-97-02-01",tel2:"",minOrder:null,phones:["599-97-02-01"],phoneLabels:["სანდრო"]},
+  {id:5,name:"შპს ჯოია მია (დიეგო)",contact:"მაგდა/დიეგო",tel1:"555-47-56-55",tel2:"591-88-61-87",minOrder:null,phones:["555-47-56-55","591-88-61-87"],phoneLabels:["მაგდა","დიეგო"]},
+  {id:6,name:"შპს დო",contact:"ოთარი",tel1:"599-54-48-48",tel2:"598-75-47-95",minOrder:null,phones:["599-54-48-48","598-75-47-95"],phoneLabels:["ოთარი","ოფ."]},
+  {id:7,name:"Unicorn Solution",contact:"ტატო/მარიკა",tel1:"577-95-55-94",tel2:"599-98-98-78",minOrder:null,phones:["577-95-55-94","599-98-98-78"],phoneLabels:["ტატო","მარიკა"]},
+  {id:8,name:"შპს ICC GEORGIA",contact:"",tel1:"+995 32 2 945 390",tel2:"",minOrder:300,phones:["+995 32 2 945 390"],phoneLabels:["ოფ."]},
+  {id:9,name:"შპს საგარეჯო",contact:"ლაშა",tel1:"557-67-71-61",tel2:"",minOrder:null,phones:["557-67-71-61"],phoneLabels:["ლაშა"]},
+  {id:10,name:"შპს ბიდი კომპანი",contact:"",tel1:"592-54-67-67",tel2:"",minOrder:100,phones:["592-54-67-67"],phoneLabels:[]},
+  {id:11,name:"შპს ჯეო-კოოპ",contact:"დათო",tel1:"599-35-41-59",tel2:"591-41-09-55",minOrder:null,phones:["599-35-41-59","591-41-09-55"],phoneLabels:["დათო","ოფ."]},
+  {id:12,name:"შპს ანიგოზი",contact:"",tel1:"599-43-67-13",tel2:"",minOrder:null,phones:["599-43-67-13"],phoneLabels:[]},
+  {id:13,name:"მაია მოდებაძე (ბაზარი)",contact:"მარიკა/მაია",tel1:"557-20-67-69",tel2:"",minOrder:null,phones:["557-20-67-69"],phoneLabels:["მარიკა"],cat:"ბაზარი"},
+  {id:14,name:"შპს ლაქტალის ჯორჯია",contact:"თამარი",tel1:"591-01-08-86",tel2:"",minOrder:null,phones:["591-01-08-86"],phoneLabels:["თამარი"]},
+  {id:15,name:"შპს გოლდ პაკი",contact:"რატი",tel1:"551-72-16-17",tel2:"",minOrder:null,phones:["551-72-16-17"],phoneLabels:["რატი"]},
+  {id:16,name:"მამუ (პური)",contact:"",tel1:"შეავსე",tel2:"",minOrder:null,phones:[],phoneLabels:[]},
+  {id:17,name:"შპს ნიკორა ტრეიდი",contact:"",tel1:"591-04-78-02",tel2:"",minOrder:null,phones:["591-04-78-02"],phoneLabels:[]},
+  {id:18,name:"ედუარდო",contact:"ედუარდო",tel1:"34688783146",tel2:"557336845",minOrder:null,phones:["34688783146","557336845"],phoneLabels:["ედ.","ოფ."]},
+  {id:19,name:"ჩაი ჯულიოუს მეინლი",contact:"",tel1:"577335146",tel2:"",minOrder:100,phones:["577335146"],phoneLabels:[]},
+  {id:20,name:"ბაზარი",contact:"—",tel1:"",tel2:"",minOrder:null,cat:"ბაზარი",phones:[],phoneLabels:[]},
 ];
 
 const PROD_DEFAULT = [
-  {id:"p1",name:"სალიამი მილანო",cat:"ხორცი",unit:"kg",price:36.44,loss:null,vat:false,sid:1,alt:null},
-  {id:"p2",name:"სალიამი სალსიჩა",cat:"ხორცი",unit:"kg",price:35.59,loss:null,vat:false,sid:1,alt:null},
-  {id:"p3",name:"ლურჯი ობიანი",cat:"რძის პროდ.",unit:"kg",price:37.00,loss:null,vat:false,sid:1,alt:null},
-  {id:"p4",name:"ტრუფელის კრემი",cat:"სოუსი",unit:"kg",price:65.44,loss:null,vat:false,sid:5,alt:1},
-  {id:"p5",name:"ზეითუნის ზეთი",cat:"სოუსი",unit:"l",price:15.59,loss:null,vat:false,sid:1,alt:null},
-  {id:"p6",name:"ბაზილიკი",cat:"ბოსტნეული",unit:"kg",price:80.01,loss:null,vat:false,sid:13,alt:null},
-  {id:"p7",name:"რუკოლა",cat:"ბოსტნეული",unit:"kg",price:15.01,loss:null,vat:false,sid:13,alt:null},
-  {id:"p8",name:"ჩერი პომიდ.",cat:"ბოსტნეული",unit:"kg",price:8.72,loss:null,vat:false,sid:13,alt:null},
-  {id:"p9",name:"მჭება გამ. პომ.",cat:"ბოსტნეული",unit:"kg",price:17.42,loss:null,vat:false,sid:6,alt:null},
-  {id:"p10",name:"არტიშოკი",cat:"ბოსტნეული",unit:"kg",price:17.21,loss:null,vat:false,sid:6,alt:null},
-  {id:"p11",name:"ბალზამიკო",cat:"სოუსი",unit:"l",price:26.42,loss:null,vat:false,sid:6,alt:null},
-  {id:"p12",name:"ზეითისხილი Coopoliva",cat:"სოუსი",unit:"pcs",price:14.3,loss:null,vat:false,sid:8,alt:null},
+  {id:"p1",name:"ბალზამიკო",cat:"ბაკალეა",unit:"l",price:26.42,loss:null,vat:false,sid:2},
+  {id:"p2",name:"ზეითუნის ზეთი",cat:"ბაკალეა",unit:"l",price:15.59,loss:null,vat:false,sid:1},
+  {id:"p3",name:"ზეითუნის ზეთი ექსტრა ვირჯილი",cat:"ბაკალეა",unit:"l",price:15.26,loss:null,vat:false,sid:1},
+  {id:"p4",name:"კაკაო",cat:"ბაკალეა",unit:"kg",price:30.13,loss:null,vat:false,sid:2},
+  {id:"p5",name:"კვერცხი",cat:"ბაკალეა",unit:"pcs",price:0.55,loss:null,vat:false,sid:9},
+  {id:"p6",name:"მარილი",cat:"ბაკალეა",unit:"kg",price:8.3,loss:null,vat:false,sid:13},
+  {id:"p7",name:"ნუტელა",cat:"ბაკალეა",unit:"kg",price:32.22,loss:null,vat:false,sid:10},
+  {id:"p8",name:"დაფქვილი წიწაკა",cat:"ბაკალეა",unit:"kg",price:25.02,loss:null,vat:false,sid:20},
+  {id:"p9",name:"დაღერღილი წიწაკა",cat:"ბაკალეა",unit:"kg",price:25.02,loss:null,vat:false,sid:20},
+  {id:"p10",name:"თაფლი",cat:"ბაკალეა",unit:"kg",price:23.08,loss:null,vat:false,sid:20},
+  {id:"p11",name:"პილპილი (შავი)",cat:"ბაკალეა",unit:"kg",price:282.22,loss:null,vat:false,sid:13},
+  {id:"p12",name:"ჟელატინის ფირფიტები",cat:"ბაკალეა",unit:"kg",price:97.75,loss:null,vat:false,sid:8},
+  {id:"p13",name:"სავოიარდი",cat:"ბაკალეა",unit:"kg",price:18.24,loss:null,vat:false,sid:13},
+  {id:"p14",name:"ტრუფელი",cat:"ბაკალეა",unit:"kg",price:65.44,loss:null,vat:false,sid:5},
+  {id:"p15",name:"ფქვილი",cat:"ბაკალეა",unit:"kg",price:3.29,loss:null,vat:false,sid:20},
+  {id:"p16",name:"შაქარი",cat:"ბაკალეა",unit:"kg",price:1.53,loss:null,vat:false,sid:13},
+  {id:"p17",name:"შაქრის პუდრი",cat:"ბაკალეა",unit:"kg",price:5.57,loss:null,vat:false,sid:8},
+  {id:"p18",name:"არტიშოკი",cat:"ბოსტნეული",unit:"kg",price:17.21,loss:null,vat:false,sid:2},
+  {id:"p19",name:"ბაზილიკი",cat:"ბოსტნეული",unit:"kg",price:80.01,loss:null,vat:false,sid:13},
+  {id:"p20",name:"ბულგარული წითელი",cat:"ბოსტნეული",unit:"kg",price:12,loss:null,vat:false,sid:13},
+  {id:"p21",name:"მზეზე გამომშრ. პომიდ.",cat:"ბოსტნეული",unit:"kg",price:17.42,loss:null,vat:false,sid:2},
+  {id:"p22",name:"ნიორი",cat:"ბოსტნეული",unit:"kg",price:5.19,loss:null,vat:false,sid:13},
+  {id:"p23",name:"პიტნა",cat:"ბოსტნეული",unit:"kg",price:35.34,loss:null,vat:false,sid:13},
+  {id:"p24",name:"პომიდორი ვარდ./ჩერი",cat:"ბოსტნეული",unit:"kg",price:9,loss:null,vat:false,sid:13},
+  {id:"p25",name:"რუკოლა",cat:"ბოსტნეული",unit:"kg",price:15.01,loss:null,vat:false,sid:13},
+  {id:"p26",name:"ჩერი პომიდ.",cat:"ბოსტნეული",unit:"kg",price:8.72,loss:null,vat:false,sid:13},
+  {id:"p27",name:"წითელი წიწაკა",cat:"ბოსტნეული",unit:"kg",price:null,loss:null,vat:false,sid:13},
+  {id:"p28",name:"კარაქი",cat:"რძის პროდ.",unit:"kg",price:39.99,loss:null,vat:false,sid:13},
+  {id:"p29",name:"ლურჯი ობიანი",cat:"რძის პროდ.",unit:"kg",price:37,loss:null,vat:false,sid:1},
+  {id:"p30",name:"მასკარპონე",cat:"რძის პროდ.",unit:"kg",price:28.81,loss:null,vat:false,sid:4},
+  {id:"p31",name:"მოცარელას ბურთები",cat:"რძის პროდ.",unit:"kg",price:37,loss:null,vat:false,sid:18},
+  {id:"p32",name:"ნაღები 35%",cat:"რძის პროდ.",unit:"l",price:9.32,loss:null,vat:false,sid:14},
+  {id:"p33",name:"პარმეზანი",cat:"რძის პროდ.",unit:"kg",price:45,loss:null,vat:false,sid:6},
+  {id:"p34",name:"რძე (ყავის)",cat:"რძის პროდ.",unit:"l",price:3.81,loss:null,vat:false,sid:7},
+  {id:"p35",name:"სტრაჩატელა",cat:"რძის პროდ.",unit:"kg",price:45.52,loss:null,vat:false,sid:18},
+  {id:"p36",name:"თხილი",cat:"ხილი",unit:"kg",price:55,loss:null,vat:false,sid:12},
+  {id:"p37",name:"კენკრა (გაყინული)",cat:"ხილი",unit:"kg",price:40,loss:null,vat:false,sid:1},
+  {id:"p38",name:"ლაიმი",cat:"ხილი",unit:"kg",price:null,loss:null,vat:false,sid:13},
+  {id:"p39",name:"ლიმონი",cat:"ხილი",unit:"kg",price:null,loss:null,vat:false,sid:13},
+  {id:"p40",name:"მარწყვი (გაყინული)",cat:"ხილი",unit:"kg",price:null,loss:null,vat:false,sid:1},
+  {id:"p41",name:"ნუში",cat:"ხილი",unit:"kg",price:37,loss:null,vat:false,sid:12},
+  {id:"p42",name:"ფისტა",cat:"ხილი",unit:"kg",price:95,loss:null,vat:false,sid:12},
+  {id:"p43",name:"შავი ზეთისხილი Coopoliva",cat:"ხილი",unit:"pcs",price:14.3,loss:null,vat:false,sid:11},
+  {id:"p44",name:"მორტადელა",cat:"ხორცი",unit:"kg",price:19.49,loss:null,vat:false,sid:3},
+  {id:"p45",name:"პროშ. გრან სასო კრუდო",cat:"ხორცი",unit:"kg",price:38.14,loss:null,vat:false,sid:3},
+  {id:"p46",name:"პროშუტო კოტო",cat:"ხორცი",unit:"kg",price:27.97,loss:null,vat:false,sid:3},
+  {id:"p47",name:"სალიამი მილანო",cat:"ხორცი",unit:"kg",price:36.44,loss:null,vat:false,sid:1},
+  {id:"p48",name:"სალიამი სალსიჩა",cat:"ხორცი",unit:"kg",price:35.59,loss:null,vat:false,sid:1},
+  {id:"p49",name:"სკიაჩატა სენდვიჩის",cat:"პური",unit:"pcs",price:5.35,loss:null,vat:false,sid:16},
+  {id:"p50",name:"ფოკაჩა",cat:"პური",unit:"pcs",price:4.02,loss:null,vat:false,sid:16},
+  {id:"p51",name:"ბორჯომი 0.5ლ",cat:"სასმელები",unit:"pcs",price:null,loss:null,vat:false,sid:20},
+  {id:"p52",name:"კოკა კოლა",cat:"სასმელები",unit:"pcs",price:1.27,loss:null,vat:false,sid:20},
+  {id:"p53",name:"ყავა (Carraro Arabica)",cat:"ყავა",unit:"kg",price:55.08,loss:null,vat:false,sid:7},
+  {id:"p54",name:"ჩაი",cat:"ყავა",unit:"pcs",price:null,loss:null,vat:false,sid:3},
+  {id:"p55",name:"ერთჯ. ჭიქა 4 OZ",cat:"საყოფაცხოვრებო",unit:"pcs",price:0.25,loss:null,vat:false,sid:15},
+  {id:"p56",name:"ერთჯ. ჭიქა 8 OZ",cat:"საყოფაცხოვრებო",unit:"pcs",price:0.31,loss:null,vat:false,sid:15},
+  {id:"p57",name:"ერთჯ. ჭიქა 14 OZ",cat:"საყოფაცხოვრებო",unit:"pcs",price:0.3,loss:null,vat:false,sid:15},
+  {id:"p58",name:"ხელთათმანი",cat:"საყოფაცხოვრებო",unit:"kg",price:5.93,loss:null,vat:false,sid:20},
+  {id:"p59",name:"ბურატა",cat:"რძის პროდ.",unit:"pcs",price:6.9,loss:null,vat:false,sid:5},
+  {id:"p60",name:"რიკოტა",cat:"რძის პროდ.",unit:"kg",price:21.64,loss:null,vat:false,sid:5},
+  {id:"p61",name:"ანჩოუსი",cat:"ბაკალეა",unit:"pcs",price:null,loss:null,vat:false,sid:1},
+  {id:"p62",name:"კანგაცლილი პომიდორი",cat:"ბოსტნეული",unit:"kg",price:5.59,loss:null,vat:false,sid:2},
+  {id:"p63",name:"მოცარელა მყარი",cat:"რძის პროდ.",unit:"kg",price:37,loss:null,vat:false,sid:2},
 ];
 
 const STAFF_DEFAULT = [
@@ -134,7 +191,7 @@ const FC_DEFAULT = [
 ];
 
 const DEL_COM=0.27, DEL_MARKUP=4;
-const PROD_CATS=["ყველა","პური","ხორცი","რძის პროდ.","ბოსტნეული","სოუსი","კაკალი","ყავა","დესერტი","საყოფაცხოვრებო"];
+const PROD_CATS=["ყველა","ბაკალეა","ბოსტნეული","რძის პროდ.","ხორცი","ხილი","პური","სასმელები","ყავა","საყოფაცხოვრებო"];
 const CAT_COL={"პური":"#fb923c","ხორცი":"#f472b6","რძის პროდ.":"#67e8f9","ბოსტნეული":"#4ade80","სოუსი":"#c9a227","კაკალი":"#a78bfa","ყავა":"#fb923c","დესერტი":"#818cf8","საყოფაცხოვრებო":"#34d399"};
 const TABS=["📋 დავ.","Dashboard","მენიუ","🧾 პროდუქტები","🛒 შეკვეთები","მომწოდ.","💰 Fixed Costs","🏛 სტრუქტურა","AI"];
 
@@ -611,11 +668,38 @@ return(
 <span style={{fontSize:12,color:"#6b5a3e",flex:1}}>დღგ 18%</span>
 <span style={{color:selectedProduct.vat?"#4ade80":"#6b5a3e"}}>{selectedProduct.vat?"კი":"არა"}</span>
 </div>
-<div style={{fontSize:10,color:"#6b5a3e",marginBottom:3}}>მომწოდებელი</div>
-<select value={selectedProduct.sid||""} onChange={e=>setSelectedProduct(p=>({...p,sid:parseInt(e.target.value)||null}))} style={{...inp,width:"100%",boxSizing:"border-box",marginBottom:8}}>
+<div style={{fontSize:10,color:"#6b5a3e",marginBottom:3}}>🥇 პირველი მომწოდებელი</div>
+<select value={selectedProduct.sid||""} onChange={e=>setSelectedProduct(p=>({...p,sid:parseInt(e.target.value)||null}))} style={{...inp,width:"100%",boxSizing:"border-box",marginBottom:4}}>
 <option value="">— აირჩიე</option>
 {suppliers.map(s=><option key={s.id} value={s.id}>#{s.id} {s.name}</option>)}
 </select>
+{(()=>{const s=suppliers.find(x=>x.id===selectedProduct.sid);if(!s)return null;const phones=s.phones&&s.phones.length>0?s.phones:[s.tel1,s.tel2].filter(t=>t&&t.trim()&&!t.includes("შეავსე"));return phones.length>0?(
+<div style={{marginBottom:8,background:"#0f0e0c",borderRadius:6,padding:"6px 10px"}}>
+{phones.map((tel,ti)=>{const clean=tel.replace(/[^0-9+]/g,"");const waNum=clean.startsWith("0")?"995"+clean.slice(1):clean.startsWith("+")?clean.slice(1):clean;const label=s.phoneLabels&&s.phoneLabels[ti]?s.phoneLabels[ti]:"ნომ."+(ti+1);return(<div key={ti} style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}><span style={{fontSize:10,color:"#6b5a3e",minWidth:40}}>{label}:</span><a href={"https://wa.me/"+waNum} target="_blank" rel="noreferrer" style={{fontSize:12,color:"#25D366",textDecoration:"none"}}>{tel} 💬</a></div>);})}
+</div>
+):null;})()}
+
+<div style={{fontSize:10,color:"#6b5a3e",marginBottom:3,marginTop:8}}>🔄 ალტერნატიული მომწოდებელი</div>
+<select value={selectedProduct.alt||""} onChange={e=>{const val=parseInt(e.target.value)||null;setSelectedProduct(p=>({...p,alt:val}));}} style={{...inp,width:"100%",boxSizing:"border-box",marginBottom:4}}>
+<option value="">— არ არის</option>
+{suppliers.filter(s=>s.id!==selectedProduct.sid).map(s=><option key={s.id} value={s.id}>#{s.id} {s.name}</option>)}
+</select>
+{(()=>{const s=suppliers.find(x=>x.id===selectedProduct.alt);if(!s)return null;const phones=s.phones&&s.phones.length>0?s.phones:[s.tel1,s.tel2].filter(t=>t&&t.trim()&&!t.includes("შეავსე"));return phones.length>0?(
+<div style={{marginBottom:8,background:"#0f0e0c",borderRadius:6,padding:"6px 10px"}}>
+{phones.map((tel,ti)=>{const clean=tel.replace(/[^0-9+]/g,"");const waNum=clean.startsWith("0")?"995"+clean.slice(1):clean.startsWith("+")?clean.slice(1):clean;const label=s.phoneLabels&&s.phoneLabels[ti]?s.phoneLabels[ti]:"ნომ."+(ti+1);return(<div key={ti} style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}><span style={{fontSize:10,color:"#6b5a3e",minWidth:40}}>{label}:</span><a href={"https://wa.me/"+waNum} target="_blank" rel="noreferrer" style={{fontSize:12,color:"#818cf8",textDecoration:"none"}}>{tel} 💬</a></div>);})}
+</div>
+):null;})()}
+
+<button onClick={()=>{
+const newSupName=prompt("ახალი მომწოდებლის სახელი:");
+if(!newSupName||!newSupName.trim())return;
+const newTel=prompt("ტელეფონი:");
+const newId=Math.max(...suppliers.map(s=>s.id),0)+1;
+const ns={id:newId,name:newSupName.trim(),contact:"—",tel1:newTel||"",tel2:"",minOrder:null,phones:newTel?[newTel]:[],phoneLabels:[]};
+setSuppliers(p=>[...p,ns]);
+setSelectedProduct(p=>({...p,alt:newId}));
+}} style={{width:"100%",padding:"7px",background:"#2a2018",border:"1px dashed #3d2d10",borderRadius:6,color:"#6b5a3e",cursor:"pointer",fontSize:11,fontFamily:"inherit",marginBottom:10}}>+ ახალი ალტ. მომწოდებლის შექმნა</button>
+
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
 <div><div style={{fontSize:10,color:"#6b5a3e",marginBottom:3}}>მაქვს</div><input type="number" value={inventory[selectedProduct.id]||""} onChange={e=>setInventory(p=>({...p,[selectedProduct.id]:e.target.value}))} style={{...inp,width:"100%",boxSizing:"border-box"}}/></div>
 <div><div style={{fontSize:10,color:"#6b5a3e",marginBottom:3}}>მინ. მარაგი</div><input type="number" value={minStocks[selectedProduct.id]||""} onChange={e=>setMinStocks(p=>({...p,[selectedProduct.id]:e.target.value}))} style={{...inp,width:"100%",boxSizing:"border-box"}}/></div>
